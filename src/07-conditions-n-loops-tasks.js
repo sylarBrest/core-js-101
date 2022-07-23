@@ -380,8 +380,28 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let minPath = pathes[0];
+  const otherPathes = [];
+  for (let index = 1; index < pathes.length; index += 1) {
+    if (pathes[index].length < minPath.length) {
+      otherPathes.push(minPath);
+      minPath = pathes[index];
+    } else {
+      otherPathes.push(pathes[index]);
+    }
+  }
+  let res = '';
+  for (let index = 0; index < minPath.length; index += 1) {
+    const chars = [];
+    for (let j = 0; j < pathes.length; j += 1) {
+      chars.push(pathes[j][index]);
+    }
+    if (chars.every((el) => el === minPath[index])) {
+      res += minPath[index];
+    } else break;
+  }
+  return res.slice(0, res.lastIndexOf('/') + 1);
 }
 
 
@@ -450,8 +470,41 @@ function getMatrixProduct(m1, m2) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const winCells = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  const all = position.slice();
+
+  for (let i = 0; i < all.length; i += 1) {
+    for (let j = 0; j < all[i].length; j += 1) {
+      if (all[i].length < 3) all[i].push('');
+      if (all[i][j] === undefined) all[i][j] = '';
+    }
+  }
+
+  const posX = [];
+  const posO = [];
+
+  for (let i = 0; i < all.flat().length; i += 1) {
+    if (all.flat()[i] === 'X') posX.push(i);
+    if (all.flat()[i] === '0') posO.push(i);
+  }
+  if (winCells.some((win) => win.every((el) => posX.includes(el)))) {
+    return 'X';
+  }
+  if (winCells.some((win) => win.every((el) => posO.includes(el)))) {
+    return '0';
+  }
+  return undefined;
 }
 
 
